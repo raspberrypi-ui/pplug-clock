@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<wf-panel-pi>
+	<plugin name="panel">
+	<_short>Panel</_short>
+	<group>
+	<_short>Clock</_short>
+	<option name="clock_time_format" type="string">
+		<_short>Time Format</_short>
+		<default>%R</default>
+	</option>
+	<option name="clock_date_format" type="string">
+		<_short>Date Format</_short>
+		<default>%A %x</default>
+	</option>
+	<option name="clock_font" type="string">
+		<_short>Clock Font</_short>
+		<default>default</default>
+	</option>
+	</group>
+	</plugin>
+</wf-panel-pi>
