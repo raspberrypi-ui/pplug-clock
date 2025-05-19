@@ -47,6 +47,14 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /* Global data                                                                */
 /*----------------------------------------------------------------------------*/
 
+conf_table_t conf_table[4] = {
+    {CONF_TYPE_STRING,   "time_format",  N_("Time format"),  NULL},
+    {CONF_TYPE_STRING,   "date_format",  N_("Date format"),  NULL},
+    {CONF_TYPE_STRING,   "font",         N_("Clock font"),   NULL},
+    //{CONF_TYPE_STRING,     "testval",         N_("Test integer"),   NULL},
+    {CONF_TYPE_NONE,     NULL,           NULL, NULL}
+};
+
 /*----------------------------------------------------------------------------*/
 /* Prototypes                                                                 */
 /*----------------------------------------------------------------------------*/
@@ -94,6 +102,20 @@ static gboolean clock_tick (ClockPlugin *clk)
     g_date_time_unref (dt);
 
     return TRUE;
+}
+
+/*----------------------------------------------------------------------------*/
+/* Font                                                                       */
+/*----------------------------------------------------------------------------*/
+
+void set_font (ClockPlugin *clk)
+{
+    if (!clk->clock_font || !g_strcmp0 (clk->clock_font, "System")) gtk_widget_override_font (clk->clock_label, NULL);
+    else
+    {
+        PangoFontDescription *pf = pango_font_description_from_string (clk->clock_font);
+        gtk_widget_override_font (clk->clock_label, pf);
+    }
 }
 
 /*----------------------------------------------------------------------------*/
@@ -146,6 +168,7 @@ void clock_init (ClockPlugin *clk)
     if (!clk->date_format) clk->date_format = g_strdup (DEFAULT_DATE_FORMAT);
     clk->calendar_window = NULL;
 
+    set_font (clk);
     clock_tick (clk);
     gtk_widget_show_all (clk->plugin);
 
@@ -184,10 +207,10 @@ static GtkWidget *clock_constructor (LXPanel *panel, config_setting_t *settings)
     lxpanel_plugin_set_data (clk->plugin, clk, clock_destructor);
 
     /* Read config */
-    const char *str;
-    if (config_setting_lookup_string (settings, "TimeFmt", &str)) clk->time_format = g_strdup (str);
-    if (config_setting_lookup_string (settings, "DateFmt", &str)) clk->date_format = g_strdup (str);
-    if (config_setting_lookup_string (settings, "Font", &str)) clk->clock_font = g_strdup (str);
+    conf_table[0].value = &clk->time_format;
+    conf_table[1].value = &clk->date_format;
+    conf_table[2].value = &clk->clock_font;
+    lxplug_read_settings (clk->settings, &conf_table);
 
     clock_init (clk);
 
@@ -218,9 +241,9 @@ static gboolean clock_apply_configuration (gpointer user_data)
 {
     ClockPlugin *clk = lxpanel_plugin_get_data (GTK_WIDGET (user_data));
 
-    config_group_set_string (clk->settings, "TimeFmt", clk->time_format);
-    config_group_set_string (clk->settings, "DateFmt", clk->date_format);
-    config_group_set_string (clk->settings, "Font", clk->clock_font);
+    lxplug_write_settings (clk->settings, conf_table);
+
+    set_font (clk);
 
     return FALSE;
 }
@@ -230,12 +253,9 @@ static GtkWidget *clock_configure (LXPanel *panel, GtkWidget *plugin)
 {
     ClockPlugin *clk = lxpanel_plugin_get_data (plugin);
 
-    return lxpanel_generic_config_dlg (_("Clock"), panel,
+    return lxpanel_generic_config_dlg_new (_("Clock"), panel,
         clock_apply_configuration, plugin,
-        _("Time format"), &clk->time_format, CONF_TYPE_STR,
-        _("Date format"), &clk->date_format, CONF_TYPE_STR,
-        _("Clock font"), &clk->clock_font, CONF_TYPE_STR,
-        NULL);
+        conf_table);
 }
 
 FM_DEFINE_MODULE (lxpanel_gtk, clock)

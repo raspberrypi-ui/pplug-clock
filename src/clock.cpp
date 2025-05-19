@@ -33,12 +33,6 @@ extern "C" {
     WayfireWidget *create () { return new WayfireClock; }
     void destroy (WayfireWidget *w) { delete w; }
 
-    static constexpr conf_table_t conf_table[4] = {
-        {CONF_STRING,   "time_format",  N_("Time format")},
-        {CONF_STRING,   "date_format",  N_("Date format")},
-        {CONF_STRING,   "font",         N_("Clock font")},
-        {CONF_NONE,     NULL,           NULL}
-    };
     const conf_table_t *config_params (void) { return conf_table; };
     const char *display_name (void) { return N_("Clock"); };
     const char *package_name (void) { return GETTEXT_PACKAGE; };
@@ -52,6 +46,7 @@ void WayfireClock::settings_changed_cb (void)
     clk->time_format = g_strdup (((std::string) time_format).c_str());
     clk->date_format = g_strdup (((std::string) date_format).c_str());
     clk->clock_font = g_strdup (((std::string) clock_font).c_str());
+    set_font (clk);
 }
 
 void WayfireClock::init (Gtk::HBox *container)

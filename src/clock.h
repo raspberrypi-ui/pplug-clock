@@ -47,12 +47,15 @@ typedef struct
     gboolean popup_shown;
 } ClockPlugin;
 
+extern conf_table_t conf_table[4];
+
 /*----------------------------------------------------------------------------*/
 /* Prototypes                                                                 */
 /*----------------------------------------------------------------------------*/
 
 extern void clock_init (ClockPlugin *clk);
 extern void clock_destructor (gpointer user_data);
+extern void set_font (ClockPlugin *clk);
 
 /* End of file */
 /*----------------------------------------------------------------------------*/
