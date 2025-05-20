@@ -1,5 +1,5 @@
 /*============================================================================
-Copyright (c) 2024 Raspberry Pi
+Copyright (c) 2025 Raspberry Pi
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without

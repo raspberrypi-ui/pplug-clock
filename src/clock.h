@@ -1,5 +1,5 @@
 /*============================================================================
-Copyright (c) 2021-2025 Raspberry Pi
+Copyright (c) 2025 Raspberry Pi
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -43,11 +43,12 @@ typedef struct
     char *time_format;			    /* Format string for time value */
     char *date_format;			    /* Format string for date value */
     char *clock_font;			    /* Clock display font */
+    gboolean override_font;         /* Use override font */
     guint timer;                    /* Seconds timer ID */
     gboolean popup_shown;
 } ClockPlugin;
 
-extern conf_table_t conf_table[4];
+extern conf_table_t conf_table[5];
 
 /*----------------------------------------------------------------------------*/
 /* Prototypes                                                                 */

@@ -1,5 +1,5 @@
 /*============================================================================
-Copyright (c) 2021-2025 Raspberry Pi
+Copyright (c) 2025 Raspberry Pi
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -47,12 +47,12 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /* Global data                                                                */
 /*----------------------------------------------------------------------------*/
 
-conf_table_t conf_table[4] = {
-    {CONF_TYPE_STRING,   "time_format",  N_("Time format"),  NULL},
-    {CONF_TYPE_STRING,   "date_format",  N_("Date format"),  NULL},
-    {CONF_TYPE_STRING,   "font",         N_("Clock font"),   NULL},
-    //{CONF_TYPE_STRING,     "testval",         N_("Test integer"),   NULL},
-    {CONF_TYPE_NONE,     NULL,           NULL, NULL}
+conf_table_t conf_table[5] = {
+    {CONF_TYPE_STRING,  "time_format",  N_("Time format"),      NULL},
+    {CONF_TYPE_STRING,  "date_format",  N_("Date format"),      NULL},
+    {CONF_TYPE_FONT,    "font",         N_("Clock font"),       NULL},
+    {CONF_TYPE_BOOL,    "custom_font",  N_("Use custom font"),  NULL},
+    {CONF_TYPE_NONE,    NULL,           NULL,                   NULL}
 };
 
 /*----------------------------------------------------------------------------*/
@@ -110,7 +110,7 @@ static gboolean clock_tick (ClockPlugin *clk)
 
 void set_font (ClockPlugin *clk)
 {
-    if (!clk->clock_font || !g_strcmp0 (clk->clock_font, "System")) gtk_widget_override_font (clk->clock_label, NULL);
+    if (!clk->clock_font || !clk->override_font) gtk_widget_override_font (clk->clock_label, NULL);
     else
     {
         PangoFontDescription *pf = pango_font_description_from_string (clk->clock_font);
@@ -207,10 +207,11 @@ static GtkWidget *clock_constructor (LXPanel *panel, config_setting_t *settings)
     lxpanel_plugin_set_data (clk->plugin, clk, clock_destructor);
 
     /* Read config */
-    conf_table[0].value = &clk->time_format;
-    conf_table[1].value = &clk->date_format;
-    conf_table[2].value = &clk->clock_font;
-    lxplug_read_settings (clk->settings, &conf_table);
+    conf_table[0].value = (void *) &clk->time_format;
+    conf_table[1].value = (void *) &clk->date_format;
+    conf_table[2].value = (void *) &clk->clock_font;
+    conf_table[3].value = (void *) &clk->override_font;
+    lxplug_read_settings (clk->settings, conf_table);
 
     clock_init (clk);
 
@@ -251,8 +252,6 @@ static gboolean clock_apply_configuration (gpointer user_data)
 /* Display configuration dialog */
 static GtkWidget *clock_configure (LXPanel *panel, GtkWidget *plugin)
 {
-    ClockPlugin *clk = lxpanel_plugin_get_data (plugin);
-
     return lxpanel_generic_config_dlg_new (_("Clock"), panel,
         clock_apply_configuration, plugin,
         conf_table);
