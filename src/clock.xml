@@ -16,6 +16,10 @@
 		<_short>Clock Font</_short>
 		<default>default</default>
 	</option>
+	<option name="clock_custom_font" type="bool">
+		<_short>Use Custom Font</_short>
+		<default>false</default>
+	</option>
 	</group>
 	</plugin>
 </wf-panel-pi>
