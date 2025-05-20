@@ -164,8 +164,6 @@ void clock_init (ClockPlugin *clk)
 #endif
 
     /* Set up variables */
-    if (!clk->time_format) clk->time_format = g_strdup (DEFAULT_TIME_FORMAT);
-    if (!clk->date_format) clk->date_format = g_strdup (DEFAULT_DATE_FORMAT);
     clk->calendar_window = NULL;
 
     set_font (clk);
@@ -205,6 +203,12 @@ static GtkWidget *clock_constructor (LXPanel *panel, config_setting_t *settings)
     clk->settings = settings;
     clk->plugin = gtk_button_new ();
     lxpanel_plugin_set_data (clk->plugin, clk, clock_destructor);
+
+    /* Set config defaults */
+    clk->time_format = g_strdup (DEFAULT_TIME_FORMAT);
+    clk->date_format = g_strdup (DEFAULT_DATE_FORMAT);
+    clk->clock_font = g_strdup ("");
+    clk->override_font = FALSE;
 
     /* Read config */
     conf_table[0].value = (void *) &clk->time_format;
