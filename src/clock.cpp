@@ -47,7 +47,7 @@ void WayfireClock::settings_changed_cb (void)
     clk->date_format = g_strdup (((std::string) date_format).c_str());
     clk->clock_font = g_strdup (((std::string) clock_font).c_str());
     clk->override_font = font_override;
-    set_font (clk);
+    clock_update_display (clk);
 }
 
 void WayfireClock::init (Gtk::HBox *container)

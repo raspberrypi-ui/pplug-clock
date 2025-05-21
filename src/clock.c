@@ -59,6 +59,14 @@ conf_table_t conf_table[5] = {
 /* Prototypes                                                                 */
 /*----------------------------------------------------------------------------*/
 
+static void show_calendar (ClockPlugin *clk);
+static gboolean clock_tick (ClockPlugin *clk);
+static void set_font (ClockPlugin *clk);
+#ifndef LXPLUG
+static gboolean clock_button_pressed (GtkWidget *, GdkEventButton *, ClockPlugin *clk);
+#endif
+static void clock_button_clicked (GtkWidget *, ClockPlugin *clk);
+
 /*----------------------------------------------------------------------------*/
 /* Function definitions                                                       */
 /*----------------------------------------------------------------------------*/
@@ -108,7 +116,7 @@ static gboolean clock_tick (ClockPlugin *clk)
 /* Font                                                                       */
 /*----------------------------------------------------------------------------*/
 
-void set_font (ClockPlugin *clk)
+static void set_font (ClockPlugin *clk)
 {
     if (!clk->clock_font || !clk->override_font) gtk_widget_override_font (clk->clock_label, NULL);
     else
@@ -139,8 +147,9 @@ static void clock_button_clicked (GtkWidget *, ClockPlugin *clk)
 }
 
 /* Handler for system config changed message from panel */
-void clock_update_display (ClockPlugin *)
+void clock_update_display (ClockPlugin *clk)
 {
+    set_font (clk);
 }
 
 void clock_init (ClockPlugin *clk)
@@ -235,12 +244,6 @@ static gboolean clock_button_press_event (GtkWidget *plugin, GdkEventButton *eve
     else return FALSE;
 }
 
-/* Handler for system config changed message from panel */
-static void clock_configuration_changed (LXPanel *, GtkWidget *)
-{
-    // font stuff ???
-}
-
 /* Apply changes from config dialog */
 static gboolean clock_apply_configuration (gpointer user_data)
 {
@@ -268,7 +271,6 @@ LXPanelPluginInit fm_module_init_lxpanel_gtk = {
     .name = N_(PLUGIN_TITLE),
     .description = N_("Digital clock and calendar"),
     .new_instance = clock_constructor,
-    .reconfigure = clock_configuration_changed,
     .button_press_event = clock_button_press_event,
     .config = clock_configure,
     .gettext_package = GETTEXT_PACKAGE
