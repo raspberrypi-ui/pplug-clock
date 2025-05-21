@@ -252,7 +252,6 @@ static gboolean clock_apply_configuration (gpointer user_data)
     lxplug_write_settings (clk->settings, conf_table);
 
     set_font (clk);
-
     return FALSE;
 }
 

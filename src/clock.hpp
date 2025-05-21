@@ -42,8 +42,6 @@ class WayfireClock : public WayfireWidget
     std::unique_ptr <Gtk::Button> plugin;
     Glib::RefPtr<Gtk::GestureLongPress> gesture;
 
-    WfOption <std::string> bar_pos {"panel/position"};
-
     WfOption <std::string> time_format {"panel/clock_time_format"};
     WfOption <std::string> date_format {"panel/clock_date_format"};
     WfOption <std::string> clock_font {"panel/clock_font"};
@@ -56,7 +54,6 @@ class WayfireClock : public WayfireWidget
 
     void init (Gtk::HBox *container) override;
     virtual ~WayfireClock ();
-    void bar_pos_changed_cb (void);
     void settings_changed_cb (void);
 };
 
