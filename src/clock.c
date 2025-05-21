@@ -256,7 +256,7 @@ static gboolean clock_apply_configuration (gpointer user_data)
 /* Display configuration dialog */
 static GtkWidget *clock_configure (LXPanel *panel, GtkWidget *plugin)
 {
-    return lxpanel_generic_config_dlg_new (_("Clock"), panel,
+    return lxpanel_generic_config_dlg_new (_(PLUGIN_TITLE), panel,
         clock_apply_configuration, plugin,
         conf_table);
 }
@@ -265,7 +265,7 @@ FM_DEFINE_MODULE (lxpanel_gtk, clock)
 
 /* Plugin descriptor */
 LXPanelPluginInit fm_module_init_lxpanel_gtk = {
-    .name = N_("Clock"),
+    .name = N_(PLUGIN_TITLE),
     .description = N_("Digital clock and calendar"),
     .new_instance = clock_constructor,
     .reconfigure = clock_configuration_changed,
