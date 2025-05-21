@@ -23,4 +23,3 @@ add_project_arguments('-D_GNU_SOURCE', language : [ 'c', 'cpp' ])
 
 subdir('src')
 subdir('po')
-#subdir('data')
