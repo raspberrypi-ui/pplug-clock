@@ -1,0 +1,5 @@
+[encoding: UTF-8]
+src/clock.c
+src/clock.cpp
+src/clock.h
+src/clock.hpp

@@ -22,5 +22,5 @@ add_project_arguments('-DPACKAGE_LOCALE_DIR="' + share_dir + '/locale"', languag
 add_project_arguments('-D_GNU_SOURCE', language : [ 'c', 'cpp' ])
 
 subdir('src')
-#subdir('po')
+subdir('po')
 #subdir('data')
