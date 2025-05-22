@@ -38,7 +38,7 @@ extern "C" {
     const char *package_name (void) { return GETTEXT_PACKAGE; };
 }
 
-void WayfireClock::settings_changed_cb (void)
+void WayfireClock::read_settings (void)
 {
     if (clk->time_format) g_free (clk->time_format);
     if (clk->date_format) g_free (clk->date_format);
@@ -47,6 +47,11 @@ void WayfireClock::settings_changed_cb (void)
     clk->date_format = g_strdup (((std::string) date_format).c_str());
     clk->clock_font = g_strdup (((std::string) clock_font).c_str());
     clk->override_font = font_override;
+}
+
+void WayfireClock::settings_changed_cb (void)
+{
+    read_settings ();
     clock_update_display (clk);
 }
 
@@ -65,6 +70,7 @@ void WayfireClock::init (Gtk::HBox *container)
     gesture = add_longpress_default (*plugin);
 
     /* Initialise the plugin */
+    read_settings ();
     clock_init (clk);
 
     /* Setup callbacks */
@@ -72,8 +78,6 @@ void WayfireClock::init (Gtk::HBox *container)
     date_format.set_callback (sigc::mem_fun (*this, &WayfireClock::settings_changed_cb));
     clock_font.set_callback (sigc::mem_fun (*this, &WayfireClock::settings_changed_cb));
     font_override.set_callback (sigc::mem_fun (*this, &WayfireClock::settings_changed_cb));
-
-    settings_changed_cb ();
 }
 
 WayfireClock::~WayfireClock()
