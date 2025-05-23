@@ -1,0 +1,5 @@
+pplug-clock (0.1) bookworm; urgency=medium
+
+  * Initial release.
+
+ -- Simon Long <simon@raspberrypi.com>  Fri, 23 May 2025 11:09:14 +0100
