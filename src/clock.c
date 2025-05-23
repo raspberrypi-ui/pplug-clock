@@ -263,11 +263,12 @@ static GtkWidget *clock_configure (LXPanel *panel, GtkWidget *plugin)
         conf_table);
 }
 
-FM_DEFINE_MODULE (lxpanel_gtk, clock)
+int module_lxpanel_gtk_version = __FM_DEFINE_VERSION__(lxpanel_gtk);
+char module_name[] = PLUGIN_NAME;
 
 /* Plugin descriptor */
 LXPanelPluginInit fm_module_init_lxpanel_gtk = {
-    .name = N_(PLUGIN_TITLE),
+    .name = PLUGIN_TITLE,
     .description = N_("Digital clock and calendar"),
     .new_instance = clock_constructor,
     .button_press_event = clock_button_press_event,
