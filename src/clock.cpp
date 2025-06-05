@@ -52,7 +52,6 @@ void WayfireClock::read_settings (void)
 void WayfireClock::settings_changed_cb (void)
 {
     read_settings ();
-    clock_update_display (clk);
 }
 
 void WayfireClock::init (Gtk::HBox *container)

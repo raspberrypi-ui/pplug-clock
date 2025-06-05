@@ -57,7 +57,6 @@ extern conf_table_t conf_table[5];
 /*----------------------------------------------------------------------------*/
 
 extern void clock_init (ClockPlugin *clk);
-extern void clock_update_display (ClockPlugin *clk);
 extern void clock_destructor (gpointer user_data);
 
 /* End of file */

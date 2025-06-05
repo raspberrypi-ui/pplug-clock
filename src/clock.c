@@ -61,7 +61,6 @@ conf_table_t conf_table[5] = {
 
 static void show_calendar (ClockPlugin *clk);
 static gboolean clock_tick (ClockPlugin *clk);
-static void set_font (ClockPlugin *clk);
 #ifndef LXPLUG
 static gboolean clock_button_pressed (GtkWidget *, GdkEventButton *, ClockPlugin *clk);
 #endif
@@ -103,27 +102,19 @@ static gboolean clock_tick (ClockPlugin *clk)
     gchar *time = g_date_time_format (dt, clk->time_format);
     gchar *date = g_date_time_format (dt, clk->date_format);
 
-    gtk_label_set_text (GTK_LABEL (clk->clock_label), time);
+    if (clk->override_font)
+    {
+        char *markup = g_strdup_printf ("<span font = \"%s\">%s</span>", clk->clock_font, time);
+        gtk_label_set_markup (GTK_LABEL (clk->clock_label), markup);
+        g_free (markup);
+    }
+    else gtk_label_set_text (GTK_LABEL (clk->clock_label), time);
     gtk_widget_set_tooltip_text (clk->plugin, date);
     g_free (time);
     g_free (date);
     g_date_time_unref (dt);
 
     return TRUE;
-}
-
-/*----------------------------------------------------------------------------*/
-/* Font                                                                       */
-/*----------------------------------------------------------------------------*/
-
-static void set_font (ClockPlugin *clk)
-{
-    if (!clk->clock_font || !clk->override_font) gtk_widget_override_font (clk->clock_label, NULL);
-    else
-    {
-        PangoFontDescription *pf = pango_font_description_from_string (clk->clock_font);
-        gtk_widget_override_font (clk->clock_label, pf);
-    }
 }
 
 /*----------------------------------------------------------------------------*/
@@ -144,12 +135,6 @@ static void clock_button_clicked (GtkWidget *, ClockPlugin *clk)
 {
     CHECK_LONGPRESS
     if (!clk->popup_shown) show_calendar (clk);
-}
-
-/* Handler for system config changed message from panel */
-void clock_update_display (ClockPlugin *clk)
-{
-    set_font (clk);
 }
 
 void clock_init (ClockPlugin *clk)
@@ -175,7 +160,6 @@ void clock_init (ClockPlugin *clk)
     /* Set up variables */
     clk->calendar_window = NULL;
 
-    set_font (clk);
     clock_tick (clk);
     gtk_widget_show_all (clk->plugin);
 
@@ -251,7 +235,6 @@ static gboolean clock_apply_configuration (gpointer user_data)
 
     lxplug_write_settings (clk->settings, conf_table);
 
-    set_font (clk);
     return FALSE;
 }
 
