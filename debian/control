@@ -10,12 +10,12 @@ Build-Depends:
 Standards-Version: 4.5.1
 Homepage: http://raspberrypi.com/
 
-Package: lxplug-clock
+Package: lpplug-clock
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends},
  lxpanel-pi
-Description: Clock plugin for lxpanel
- Plugin for lxpanel to display digital clock.
+Description: Clock plugin for lxpanel-pi
+ Plugin for lxpanel-pi to display digital clock.
 
 Package: wfplug-clock
 Architecture: any
