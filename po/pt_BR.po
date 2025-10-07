@@ -1,0 +1,43 @@
+# English translations for plugin package.
+# Copyright (C) 2025 Raspberry Pi
+# This file is distributed under the same license as the wf-panel-pi package.
+# Eduardo Addad de Oliveira <eduardo@addadtech.com.br>, 2025.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-05-23 10:36+0100\n"
+"PO-Revision-Date: 2025-10-06 22:56-0300\n"
+"Last-Translator: Eduardo Addad de Oliveira <eduardo@addadtech.com.br>\n"
+"Language-Team: Portuguese (Brazil)\n"
+"Language: pt_BR\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"X-Generator: Poedit 3.7\n"
+
+#: ../src/clock.c:51
+msgid "Time format"
+msgstr "Formato da hora"
+
+#: ../src/clock.c:52
+msgid "Date format"
+msgstr "Formato de data"
+
+#: ../src/clock.c:53
+msgid "Clock font"
+msgstr "Fonte do relógio"
+
+#: ../src/clock.c:54
+msgid "Use custom font"
+msgstr "Usar fonte personalizada"
+
+#: ../src/clock.c:272
+msgid "Digital clock and calendar"
+msgstr "Relógio digital e calendário"
+
+#: ../src/clock.h:32
+msgid "Clock"
+msgstr "Relógio"
