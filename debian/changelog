@@ -1,3 +1,9 @@
+pplug-clock (1.2) trixie; urgency=medium
+
+  * Update Portuguese translation
+
+ -- Simon Long <simon@raspberrypi.com>  Wed, 08 Oct 2025 09:16:58 +0100
+
 pplug-clock (1.1) trixie; urgency=medium
 
   * Add Portuguese translation
