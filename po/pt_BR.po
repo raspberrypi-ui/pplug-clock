@@ -20,7 +20,7 @@ msgstr ""
 
 #: ../src/clock.c:51
 msgid "Time format"
-msgstr "Formato da hora"
+msgstr "Formato de hora"
 
 #: ../src/clock.c:52
 msgid "Date format"
