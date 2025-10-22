@@ -135,6 +135,9 @@ static void clock_button_clicked (GtkWidget *, ClockPlugin *clk)
 {
     CHECK_LONGPRESS
     if (!clk->popup_shown) show_calendar (clk);
+#ifndef LXPLUG
+    else close_popup ();
+#endif
 }
 
 void clock_init (ClockPlugin *clk)
