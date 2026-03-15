@@ -60,6 +60,7 @@ conf_table_t conf_table[5] = {
 /*----------------------------------------------------------------------------*/
 
 static void show_calendar (ClockPlugin *clk);
+static gboolean handle_popup_keypress (GtkWidget *, GdkEventKey *event, gpointer user_data);
 static gboolean clock_tick (ClockPlugin *clk);
 #ifndef LXPLUG
 static gboolean clock_button_pressed (GtkWidget *, GdkEventButton *, ClockPlugin *clk);
@@ -88,8 +89,25 @@ static void show_calendar (ClockPlugin *clk)
     /* Create a standard calendar widget as a child of the vertical box. */
     GtkWidget *calendar = gtk_calendar_new ();
     gtk_container_add (GTK_CONTAINER (clk->calendar_window), calendar);
+    g_signal_connect (calendar, "key-press-event", G_CALLBACK (handle_popup_keypress), clk);
 
     wrap_popup_at_button (clk, clk->calendar_window, clk->plugin);
+}
+
+static gboolean handle_popup_keypress (GtkWidget *, GdkEventKey *event, gpointer user_data)
+{
+    ClockPlugin *clk = (ClockPlugin *) user_data;
+
+    if (event->keyval == GDK_KEY_Escape)
+    {
+#ifdef LXPLUG
+        if (clk->calendar_window) gtk_widget_destroy (clk->calendar_window);
+#else
+        close_popup ();
+#endif
+        return TRUE;
+    }
+    return FALSE;
 }
 
 /*----------------------------------------------------------------------------*/
