@@ -91,6 +91,8 @@ static void show_calendar (ClockPlugin *clk)
     gtk_container_add (GTK_CONTAINER (clk->calendar_window), calendar);
     g_signal_connect (calendar, "key-press-event", G_CALLBACK (handle_popup_keypress), clk);
 
+    g_signal_connect (clk->calendar_window, "destroy", G_CALLBACK (cal_destroyed), clk);
+
     wrap_popup_at_button (clk, clk->calendar_window, clk->plugin);
 }
 
@@ -108,6 +110,12 @@ static gboolean handle_popup_keypress (GtkWidget *, GdkEventKey *event, gpointer
         return TRUE;
     }
     return FALSE;
+}
+
+static void cal_destroyed (GtkWidget *widget, gpointer user_data)
+{
+    ClockPlugin *clk = (ClockPlugin *) user_data;
+    clk->calendar_window = NULL;
 }
 
 /*----------------------------------------------------------------------------*/
@@ -151,11 +159,13 @@ static gboolean clock_button_pressed (GtkWidget *, GdkEventButton *, ClockPlugin
 
 static void clock_button_clicked (GtkWidget *, ClockPlugin *clk)
 {
+#ifdef LXPLUG
+    if (clk->calendar_window) gtk_widget_destroy (clk->calendar_window);
+#else
     CHECK_LONGPRESS
-    if (!clk->popup_shown) show_calendar (clk);
-#ifndef LXPLUG
-    else close_popup ();
+    if (clk->popup_shown) close_popup ();
 #endif
+    else show_calendar (clk);
 }
 
 void clock_init (ClockPlugin *clk)
@@ -175,8 +185,8 @@ void clock_init (ClockPlugin *clk)
     gtk_button_set_relief (GTK_BUTTON (clk->plugin), GTK_RELIEF_NONE);
 #ifndef LXPLUG
     g_signal_connect (clk->plugin, "button-press-event", G_CALLBACK (clock_button_pressed), clk);
-    g_signal_connect (clk->plugin, "clicked", G_CALLBACK (clock_button_clicked), clk);
 #endif
+    g_signal_connect (clk->plugin, "clicked", G_CALLBACK (clock_button_clicked), clk);
 
     /* Set up variables */
     clk->calendar_window = NULL;
