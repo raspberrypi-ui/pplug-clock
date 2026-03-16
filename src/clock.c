@@ -61,6 +61,7 @@ conf_table_t conf_table[5] = {
 
 static void show_calendar (ClockPlugin *clk);
 static gboolean handle_popup_keypress (GtkWidget *, GdkEventKey *event, gpointer user_data);
+static void cal_destroyed (GtkWidget *, gpointer user_data);
 static gboolean clock_tick (ClockPlugin *clk);
 #ifndef LXPLUG
 static gboolean clock_button_pressed (GtkWidget *, GdkEventButton *, ClockPlugin *clk);
@@ -112,7 +113,7 @@ static gboolean handle_popup_keypress (GtkWidget *, GdkEventKey *event, gpointer
     return FALSE;
 }
 
-static void cal_destroyed (GtkWidget *widget, gpointer user_data)
+static void cal_destroyed (GtkWidget *, gpointer user_data)
 {
     ClockPlugin *clk = (ClockPlugin *) user_data;
     clk->calendar_window = NULL;
