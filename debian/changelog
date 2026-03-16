@@ -1,3 +1,9 @@
+pplug-clock (1.5) trixie; urgency=medium
+
+  * Close calendar on escape key
+
+ -- Simon Long <simon@raspberrypi.com>  Mon, 16 Mar 2026 07:57:28 +0000
+
 pplug-clock (1.4) trixie; urgency=medium
 
   * Rebuild against latest APIs
