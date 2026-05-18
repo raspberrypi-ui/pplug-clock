@@ -1,3 +1,9 @@
+pplug-clock (1.6) trixie; urgency=medium
+
+  * Add Polish translation
+
+ -- Simon Long <simon@raspberrypi.com>  Mon, 18 May 2026 11:42:32 +0100
+
 pplug-clock (1.5) trixie; urgency=medium
 
   * Close calendar on escape key
