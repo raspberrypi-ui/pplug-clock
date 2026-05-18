@@ -1,0 +1,44 @@
+# Polish translations for plugin package
+# Copyright (C) 2025 Raspberry Pi
+# This file is distributed under the same license as the wf-panel-pi package.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-04-15 19:14+0200\n"
+"PO-Revision-Date: 2026-04-15 19:14+0200\n"
+"Last-Translator: Skotniczny <skotniczny@outlook.com>\n"
+"Language-Team: \n"
+"Language: pl\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 "
+"|| n%100>=20) ? 1 : 2);\n"
+
+#: ../src/clock.c:51
+msgid "Time format"
+msgstr "Format czasu"
+
+#: ../src/clock.c:52
+msgid "Date format"
+msgstr "Format daty"
+
+#: ../src/clock.c:53
+msgid "Clock font"
+msgstr "Czcionka zegara"
+
+#: ../src/clock.c:54
+msgid "Use custom font"
+msgstr "Użyj niestandardowej czcionki"
+
+#: ../src/clock.c:287
+msgid "Digital clock and calendar"
+msgstr "Zegar i kalendarz"
+
+#. End of file
+#. ----------------------------------------------------------------------------
+#: ../src/clock.h:32
+msgid "Clock"
+msgstr "Zegar"
