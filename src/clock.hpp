@@ -46,6 +46,7 @@ class WayfireClock : public WayfireWidget
     WfOption <std::string> date_format {"panel/clock_date_format"};
     WfOption <std::string> clock_font {"panel/clock_font"};
     WfOption <bool> font_override {"panel/clock_custom_font"};
+    WfOption <bool> analogue {"panel/clock_analogue"};
 
     /* plugin */
     ClockPlugin *clk;

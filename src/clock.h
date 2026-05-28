@@ -41,6 +41,7 @@ typedef struct
 #endif
 
     GtkWidget *clock_label;         /* Clock display */
+    GtkWidget *clock_ana;
     GtkWidget *calendar_window;     /* Calendar window */
     char *time_format;			    /* Format string for time value */
     char *date_format;			    /* Format string for date value */
@@ -48,9 +49,10 @@ typedef struct
     gboolean override_font;         /* Use override font */
     guint timer;                    /* Seconds timer ID */
     gboolean popup_shown;
+    gboolean analogue;
 } ClockPlugin;
 
-extern conf_table_t conf_table[5];
+extern conf_table_t conf_table[6];
 
 /*----------------------------------------------------------------------------*/
 /* Prototypes                                                                 */

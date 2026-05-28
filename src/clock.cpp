@@ -47,6 +47,7 @@ void WayfireClock::read_settings (void)
     clk->date_format = g_strdup (((std::string) date_format).c_str());
     clk->clock_font = g_strdup (((std::string) clock_font).c_str());
     clk->override_font = font_override;
+    clk->analogue = analogue;
 }
 
 void WayfireClock::settings_changed_cb (void)
@@ -77,6 +78,7 @@ void WayfireClock::init (Gtk::HBox *container)
     date_format.set_callback (sigc::mem_fun (*this, &WayfireClock::settings_changed_cb));
     clock_font.set_callback (sigc::mem_fun (*this, &WayfireClock::settings_changed_cb));
     font_override.set_callback (sigc::mem_fun (*this, &WayfireClock::settings_changed_cb));
+    analogue.set_callback (sigc::mem_fun (*this, &WayfireClock::settings_changed_cb));
 }
 
 WayfireClock::~WayfireClock()

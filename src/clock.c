@@ -25,6 +25,7 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ============================================================================*/
 
+#include <math.h>
 #include <locale.h>
 #include <glib/gi18n.h>
 
@@ -47,11 +48,12 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /* Global data                                                                */
 /*----------------------------------------------------------------------------*/
 
-conf_table_t conf_table[5] = {
+conf_table_t conf_table[6] = {
     {CONF_TYPE_STRING,  "time_format",  N_("Time format"),      NULL},
     {CONF_TYPE_STRING,  "date_format",  N_("Date format"),      NULL},
     {CONF_TYPE_FONT,    "font",         N_("Clock font"),       NULL},
     {CONF_TYPE_BOOL,    "custom_font",  N_("Use custom font"),  NULL},
+    {CONF_TYPE_BOOL,    "analogue",     N_("Display analogue clock"),  NULL},
     {CONF_TYPE_NONE,    NULL,           NULL,                   NULL}
 };
 
@@ -119,6 +121,76 @@ static void cal_destroyed (GtkWidget *, gpointer user_data)
     clk->calendar_window = NULL;
 }
 
+static void draw_face (ClockPlugin *clk, int hr, int min)
+{
+    int ic, hm;
+    double mid, r, th, l1, l3, fh;
+
+    // calculate dimensions based on icon size
+    ic = wrap_icon_size (clk) - 2;
+    mid = ic / 2;
+    l1 = mid / 64;
+    l3 = mid / 16;
+
+    // create the drawing surface
+    cairo_surface_t *surface = cairo_image_surface_create (CAIRO_FORMAT_ARGB32, ic, ic);
+    cairo_t *cr = cairo_create (surface);
+
+    // draw circle on surface
+    cairo_set_source_rgb (cr, 1, 1, 1);
+    cairo_arc (cr, mid, mid, mid, 0, 2.0 * M_PI);
+    cairo_fill (cr);
+
+    // draw border
+    cairo_set_source_rgb (cr, 0, 0, 0);
+    cairo_set_line_width (cr, l1);
+    cairo_arc (cr, mid, mid, mid - l1, 0, 2.0 * M_PI);
+    cairo_stroke (cr);
+
+    // draw markings
+    cairo_set_line_width (cr, l1 / 2);
+    for (hm = 0; hm < 12; hm++)
+    {
+        th = hm * 2.0 * M_PI / 12.0;
+        r = mid - 0.5;
+        cairo_move_to (cr, mid + (cos (th) * r), mid + (sin (th) * r));
+        r = mid * ((hm % 3 == 0) ? 0.6 : 0.75);
+        cairo_line_to (cr, mid + (cos (th) * r), mid + (sin (th) * r));
+        cairo_stroke (cr);
+    }
+
+    // draw hands
+    cairo_set_source_rgb (cr, 0.4, 0.4, 0.4);
+    cairo_set_line_width (cr, l3);
+    th = (min - 15) * 2.0 * M_PI / 60.0;
+    r = mid * 0.85;
+    cairo_move_to (cr, mid, mid);
+    cairo_line_to (cr, mid + (cos (th) * r), mid + (sin (th) * r));
+    cairo_stroke (cr);
+
+    fh = hr * 1.0 + min / 60.0;
+    th = (fh - 3.0) * 2.0 * M_PI / 12.0;
+    r = mid * 0.5;
+    cairo_move_to (cr, mid, mid);
+    cairo_line_to (cr, mid + (cos (th) * r), mid + (sin (th) * r));
+    cairo_stroke (cr);
+
+    // draw spindle
+    cairo_arc (cr, mid, mid, mid / 16, 0, 2.0 * M_PI);
+    cairo_fill (cr);
+
+    // create a pixbuf from the cairo surface
+    GdkPixbuf *pixbuf = gdk_pixbuf_get_from_surface (surface, 0, 0, ic, ic);
+
+    // copy the pixbuf to the image
+    g_object_ref_sink (clk->clock_ana);
+    gtk_image_set_from_pixbuf (GTK_IMAGE (clk->clock_ana), pixbuf);
+
+    g_object_unref (pixbuf);
+    cairo_destroy (cr);
+}
+
+
 /*----------------------------------------------------------------------------*/
 /* Timer handler                                                              */
 /*----------------------------------------------------------------------------*/
@@ -137,9 +209,15 @@ static gboolean clock_tick (ClockPlugin *clk)
     }
     else gtk_label_set_text (GTK_LABEL (clk->clock_label), time);
     gtk_widget_set_tooltip_text (clk->plugin, date);
+
+    draw_face (clk, g_date_time_get_hour (dt), g_date_time_get_minute (dt));
+
     g_free (time);
     g_free (date);
     g_date_time_unref (dt);
+
+    gtk_widget_set_visible (clk->clock_label, !clk->analogue);
+    gtk_widget_set_visible (clk->clock_ana, clk->analogue);
 
     return TRUE;
 }
@@ -180,7 +258,12 @@ void clock_init (ClockPlugin *clk)
     gtk_widget_set_margin_start (clk->clock_label, 4);
     gtk_widget_set_margin_end (clk->clock_label, 4);
     gtk_label_set_xalign (GTK_LABEL (clk->clock_label), 0.5);
-    gtk_container_add (GTK_CONTAINER (clk->plugin), clk->clock_label);
+    clk->clock_ana = gtk_image_new ();
+
+    GtkWidget *box = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
+    gtk_container_add (GTK_CONTAINER (clk->plugin), box);
+    gtk_container_add (GTK_CONTAINER (box), clk->clock_label);
+    gtk_container_add (GTK_CONTAINER (box), clk->clock_ana);
 
     /* Set up button */
     gtk_button_set_relief (GTK_BUTTON (clk->plugin), GTK_RELIEF_NONE);
