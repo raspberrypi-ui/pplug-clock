@@ -298,6 +298,7 @@ void clock_init (ClockPlugin *clk)
 
     gtk_widget_show_all (clk->plugin);
     clock_tick (clk);
+    clock_update_display (clk);
 
     /* Start timed event to update clock */
     clk->timer = g_timeout_add_seconds (1, (GSourceFunc) clock_tick, clk);
