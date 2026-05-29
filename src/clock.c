@@ -124,13 +124,13 @@ static void cal_destroyed (GtkWidget *, gpointer user_data)
 static void draw_face (ClockPlugin *clk, int hr, int min)
 {
     int ic, hm;
-    double mid, r, th, l1, l3, fh;
+    double mid, r, th, l1, l2, fh;
 
     // calculate dimensions based on icon size
     ic = wrap_icon_size (clk) - 2;
     mid = ic / 2;
     l1 = mid / 64;
-    l3 = mid / 16;
+    l2 = mid / 16;
 
     // create the drawing surface
     cairo_surface_t *surface = cairo_image_surface_create (CAIRO_FORMAT_ARGB32, ic, ic);
@@ -143,12 +143,12 @@ static void draw_face (ClockPlugin *clk, int hr, int min)
 
     // draw border
     cairo_set_source_rgb (cr, 0, 0, 0);
-    cairo_set_line_width (cr, l1);
+    cairo_set_line_width (cr, l2);
     cairo_arc (cr, mid, mid, mid - l1, 0, 2.0 * M_PI);
     cairo_stroke (cr);
 
     // draw markings
-    cairo_set_line_width (cr, l1 / 2);
+    cairo_set_line_width (cr, l1);
     for (hm = 0; hm < 12; hm++)
     {
         th = hm * 2.0 * M_PI / 12.0;
@@ -160,8 +160,7 @@ static void draw_face (ClockPlugin *clk, int hr, int min)
     }
 
     // draw hands
-    cairo_set_source_rgb (cr, 0.4, 0.4, 0.4);
-    cairo_set_line_width (cr, l3);
+    cairo_set_line_width (cr, l2);
     th = (min - 15) * 2.0 * M_PI / 60.0;
     r = mid * 0.85;
     cairo_move_to (cr, mid, mid);
@@ -176,7 +175,7 @@ static void draw_face (ClockPlugin *clk, int hr, int min)
     cairo_stroke (cr);
 
     // draw spindle
-    cairo_arc (cr, mid, mid, mid / 16, 0, 2.0 * M_PI);
+    cairo_arc (cr, mid, mid, l2, 0, 2.0 * M_PI);
     cairo_fill (cr);
 
     // create a pixbuf from the cairo surface
