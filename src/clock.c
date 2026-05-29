@@ -199,6 +199,7 @@ static void draw_face (ClockPlugin *clk, int hr, int min)
 
 static gboolean clock_tick (ClockPlugin *clk)
 {
+    static int last_min = -1;
     GDateTime *dt = g_date_time_new_now_local ();
     gchar *time = g_date_time_format (dt, clk->time_format);
     gchar *date = g_date_time_format (dt, clk->date_format);
@@ -212,7 +213,12 @@ static gboolean clock_tick (ClockPlugin *clk)
     else gtk_label_set_text (GTK_LABEL (clk->clock_label), time);
     gtk_widget_set_tooltip_text (clk->plugin, date);
 
-    draw_face (clk, g_date_time_get_hour (dt), g_date_time_get_minute (dt));
+    // only do all the cairo drawing if the picture needs to change
+    if (last_min != g_date_time_get_minute (dt))
+    {
+        draw_face (clk, g_date_time_get_hour (dt), g_date_time_get_minute (dt));
+        last_min = g_date_time_get_minute (dt);
+    }
 
     g_free (time);
     g_free (date);
