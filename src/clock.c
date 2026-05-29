@@ -64,6 +64,7 @@ conf_table_t conf_table[6] = {
 static void show_calendar (ClockPlugin *clk);
 static gboolean handle_popup_keypress (GtkWidget *, GdkEventKey *event, gpointer user_data);
 static void cal_destroyed (GtkWidget *, gpointer user_data);
+static void draw_face (ClockPlugin *clk, int hr, int min);
 static gboolean clock_tick (ClockPlugin *clk);
 #ifndef LXPLUG
 static gboolean clock_button_pressed (GtkWidget *, GdkEventButton *, ClockPlugin *clk);
@@ -121,16 +122,20 @@ static void cal_destroyed (GtkWidget *, gpointer user_data)
     clk->calendar_window = NULL;
 }
 
+/*----------------------------------------------------------------------------*/
+/* Analogue clock                                                             */
+/*----------------------------------------------------------------------------*/
+
 static void draw_face (ClockPlugin *clk, int hr, int min)
 {
     int ic, hm;
-    double mid, r, th, l1, l2, fh;
+    double mid, wid, r, th;
+    double twopi = 2.0 * M_PI;
 
     // calculate dimensions based on icon size
     ic = wrap_icon_size (clk) - 2;
     mid = ic / 2;
-    l1 = mid / 64;
-    l2 = mid / 16;
+    wid = mid / 16;
 
     // create the drawing surface
     cairo_surface_t *surface = cairo_image_surface_create (CAIRO_FORMAT_ARGB32, ic, ic);
@@ -138,44 +143,43 @@ static void draw_face (ClockPlugin *clk, int hr, int min)
 
     // draw circle on surface
     cairo_set_source_rgb (cr, 1, 1, 1);
-    cairo_arc (cr, mid, mid, mid, 0, 2.0 * M_PI);
+    cairo_arc (cr, mid, mid, mid, 0, twopi);
     cairo_fill (cr);
 
     // draw border
     cairo_set_source_rgb (cr, 0, 0, 0);
-    cairo_set_line_width (cr, l2);
-    cairo_arc (cr, mid, mid, mid - l1, 0, 2.0 * M_PI);
+    cairo_set_line_width (cr, wid);
+    cairo_arc (cr, mid, mid, mid - (wid / 2.0), 0, twopi);
     cairo_stroke (cr);
 
     // draw markings
-    cairo_set_line_width (cr, l1);
+    cairo_set_line_width (cr, wid / 4.0);
     for (hm = 0; hm < 12; hm++)
     {
-        th = hm * 2.0 * M_PI / 12.0;
-        r = mid - 0.5;
-        cairo_move_to (cr, mid + (cos (th) * r), mid + (sin (th) * r));
+        th = hm * twopi / 12.0;
         r = mid * ((hm % 3 == 0) ? 0.6 : 0.75);
+        cairo_move_to (cr, mid + (cos (th) * mid), mid + (sin (th) * mid));
         cairo_line_to (cr, mid + (cos (th) * r), mid + (sin (th) * r));
         cairo_stroke (cr);
     }
 
     // draw hands
-    cairo_set_line_width (cr, l2);
-    th = (min - 15) * 2.0 * M_PI / 60.0;
+    cairo_set_line_width (cr, wid);
+    th = (min - 15) * twopi / 60.0;
     r = mid * 0.85;
     cairo_move_to (cr, mid, mid);
     cairo_line_to (cr, mid + (cos (th) * r), mid + (sin (th) * r));
     cairo_stroke (cr);
 
-    fh = hr * 1.0 + min / 60.0;
-    th = (fh - 3.0) * 2.0 * M_PI / 12.0;
+    th = hr * 1.0 + min / 60.0;
+    th = (th - 3.0) * twopi / 12.0;
     r = mid * 0.5;
     cairo_move_to (cr, mid, mid);
     cairo_line_to (cr, mid + (cos (th) * r), mid + (sin (th) * r));
     cairo_stroke (cr);
 
     // draw spindle
-    cairo_arc (cr, mid, mid, l2, 0, 2.0 * M_PI);
+    cairo_arc (cr, mid, mid, wid, 0, twopi);
     cairo_fill (cr);
 
     // create a pixbuf from the cairo surface
@@ -188,7 +192,6 @@ static void draw_face (ClockPlugin *clk, int hr, int min)
     g_object_unref (pixbuf);
     cairo_destroy (cr);
 }
-
 
 /*----------------------------------------------------------------------------*/
 /* Timer handler                                                              */
@@ -274,8 +277,8 @@ void clock_init (ClockPlugin *clk)
     /* Set up variables */
     clk->calendar_window = NULL;
 
-    clock_tick (clk);
     gtk_widget_show_all (clk->plugin);
+    clock_tick (clk);
 
     /* Start timed event to update clock */
     clk->timer = g_timeout_add_seconds (1, (GSourceFunc) clock_tick, clk);
