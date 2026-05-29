@@ -38,6 +38,12 @@ extern "C" {
     const char *package_name (void) { return GETTEXT_PACKAGE; };
 }
 
+bool WayfireClock::set_icon (void)
+{
+    clock_update_display (clk);
+    return false;
+}
+
 void WayfireClock::read_settings (void)
 {
     if (clk->time_format) g_free (clk->time_format);

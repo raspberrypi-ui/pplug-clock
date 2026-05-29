@@ -57,6 +57,7 @@ class WayfireClock : public WayfireWidget
 
     void init (Gtk::HBox *container) override;
     virtual ~WayfireClock ();
+    bool set_icon (void);
     void read_settings (void);
     void settings_changed_cb (void);
 };
