@@ -33,6 +33,15 @@ msgstr "Clock Font"
 msgid "Use custom font"
 msgstr "Use Custom Font"
 
+msgid "Analogue clock"
+msgstr "Analogue Clock"
+
+msgid "Colour of hands"
+msgstr "Colour of Hands"
+
+msgid "Colour of face"
+msgstr "Colour of Face"
+
 #: ../src/clock.c:272
 msgid "Digital clock and calendar"
 msgstr ""

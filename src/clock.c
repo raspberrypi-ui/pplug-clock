@@ -48,12 +48,14 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /* Global data                                                                */
 /*----------------------------------------------------------------------------*/
 
-conf_table_t conf_table[6] = {
+conf_table_t conf_table[8] = {
     {CONF_TYPE_STRING,  "time_format",  N_("Time format"),      NULL},
     {CONF_TYPE_STRING,  "date_format",  N_("Date format"),      NULL},
     {CONF_TYPE_FONT,    "font",         N_("Clock font"),       NULL},
     {CONF_TYPE_BOOL,    "custom_font",  N_("Use custom font"),  NULL},
-    {CONF_TYPE_BOOL,    "analogue",     N_("Display analogue clock"),  NULL},
+    {CONF_TYPE_BOOL,    "analogue",     N_("Analogue clock"),   NULL},
+    {CONF_TYPE_COLOUR,  "face_col",     N_("Colour of face"),   NULL},
+    {CONF_TYPE_COLOUR,  "hands_col",    N_("Colour of hands"),  NULL},
     {CONF_TYPE_NONE,    NULL,           NULL,                   NULL}
 };
 
@@ -142,12 +144,12 @@ static void draw_face (ClockPlugin *clk, int hr, int min)
     cairo_t *cr = cairo_create (surface);
 
     // draw circle on surface
-    cairo_set_source_rgb (cr, 1, 1, 1);
+    cairo_set_source_rgb (cr, clk->face_col.red, clk->face_col.green, clk->face_col.blue);
     cairo_arc (cr, mid, mid, mid, 0, twopi);
     cairo_fill (cr);
 
     // draw border
-    cairo_set_source_rgb (cr, 0, 0, 0);
+    cairo_set_source_rgb (cr, clk->hands_col.red, clk->hands_col.green, clk->hands_col.blue);
     cairo_set_line_width (cr, wid);
     cairo_arc (cr, mid, mid, mid - (wid / 2.0), 0, twopi);
     cairo_stroke (cr);
@@ -233,6 +235,17 @@ static gboolean clock_tick (ClockPlugin *clk)
 /*----------------------------------------------------------------------------*/
 /* wf-panel plugin functions                                                  */
 /*----------------------------------------------------------------------------*/
+
+/* Handler for system config changed message from panel */
+void clock_update_display (ClockPlugin *clk)
+{
+    GDateTime *dt = g_date_time_new_now_local ();
+    draw_face (clk, g_date_time_get_hour (dt), g_date_time_get_minute (dt));
+    g_date_time_unref (dt);
+
+    gtk_widget_set_visible (clk->clock_label, !clk->analogue);
+    gtk_widget_set_visible (clk->clock_ana, clk->analogue);
+}
 
 /* Handler for button click */
 #ifndef LXPLUG

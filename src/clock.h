@@ -50,15 +50,18 @@ typedef struct
     guint timer;                    /* Seconds timer ID */
     gboolean popup_shown;
     gboolean analogue;
+    GdkRGBA face_col;               /* Clock face colour */
+    GdkRGBA hands_col;              /* Clock hands colour */
 } ClockPlugin;
 
-extern conf_table_t conf_table[6];
+extern conf_table_t conf_table[8];
 
 /*----------------------------------------------------------------------------*/
 /* Prototypes                                                                 */
 /*----------------------------------------------------------------------------*/
 
 extern void clock_init (ClockPlugin *clk);
+extern void clock_update_display (ClockPlugin *clk);
 extern void clock_destructor (gpointer user_data);
 
 /* End of file */

@@ -21,8 +21,16 @@
 		<default>false</default>
 	</option>
 	<option name="clock_analogue" type="bool">
-		<_short>Use Analogue CLock</_short>
+		<_short>Use Analogue Clock</_short>
 		<default>false</default>
+	</option>
+	<option name="clock_face_col" type="string">
+		<_short>Face Colour</_short>
+		<default>white</default>
+	</option>
+	<option name="clock_hands_col" type="string">
+		<_short>Hands Colour</_short>
+		<default>black</default>
 	</option>
 	</group>
 	</plugin>

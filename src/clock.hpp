@@ -47,6 +47,8 @@ class WayfireClock : public WayfireWidget
     WfOption <std::string> clock_font {"panel/clock_font"};
     WfOption <bool> font_override {"panel/clock_custom_font"};
     WfOption <bool> analogue {"panel/clock_analogue"};
+    WfOption <std::string> face_col {"panel/clock_face_col"};
+    WfOption <std::string> hands_col {"panel/clock_hands_col"};
 
     /* plugin */
     ClockPlugin *clk;

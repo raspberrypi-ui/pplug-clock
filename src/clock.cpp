@@ -48,11 +48,16 @@ void WayfireClock::read_settings (void)
     clk->clock_font = g_strdup (((std::string) clock_font).c_str());
     clk->override_font = font_override;
     clk->analogue = analogue;
+    if (!gdk_rgba_parse (&clk->face_col, ((std::string) face_col).c_str()))
+        gdk_rgba_parse (&clk->face_col, "white");
+    if (!gdk_rgba_parse (&clk->hands_col, ((std::string) hands_col).c_str()))
+        gdk_rgba_parse (&clk->hands_col, "black");
 }
 
 void WayfireClock::settings_changed_cb (void)
 {
     read_settings ();
+    clock_update_display (clk);
 }
 
 void WayfireClock::init (Gtk::HBox *container)
@@ -79,6 +84,8 @@ void WayfireClock::init (Gtk::HBox *container)
     clock_font.set_callback (sigc::mem_fun (*this, &WayfireClock::settings_changed_cb));
     font_override.set_callback (sigc::mem_fun (*this, &WayfireClock::settings_changed_cb));
     analogue.set_callback (sigc::mem_fun (*this, &WayfireClock::settings_changed_cb));
+    face_col.set_callback (sigc::mem_fun (*this, &WayfireClock::settings_changed_cb));
+    hands_col.set_callback (sigc::mem_fun (*this, &WayfireClock::settings_changed_cb));
 }
 
 WayfireClock::~WayfireClock()
