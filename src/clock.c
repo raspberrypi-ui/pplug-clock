@@ -130,17 +130,19 @@ static void cal_destroyed (GtkWidget *, gpointer user_data)
 
 static void draw_face (ClockPlugin *clk, int hr, int min)
 {
-    int ic, hm;
+    int ic, hm, scale;;
     double mid, wid, r, th;
     double twopi = 2.0 * M_PI;
 
     // calculate dimensions based on icon size
+    scale = gtk_widget_get_scale_factor (clk->clock_ana);
     ic = wrap_icon_size (clk) - 2;
     mid = ic / 2;
     wid = mid / 16;
 
     // create the drawing surface
-    cairo_surface_t *surface = cairo_image_surface_create (CAIRO_FORMAT_ARGB32, ic, ic);
+    cairo_surface_t *surface = cairo_image_surface_create (CAIRO_FORMAT_ARGB32, ic * scale, ic * scale);
+    cairo_surface_set_device_scale (surface, scale, scale);
     cairo_t *cr = cairo_create (surface);
 
     // draw circle on surface
@@ -184,14 +186,10 @@ static void draw_face (ClockPlugin *clk, int hr, int min)
     cairo_arc (cr, mid, mid, wid, 0, twopi);
     cairo_fill (cr);
 
-    // create a pixbuf from the cairo surface
-    GdkPixbuf *pixbuf = gdk_pixbuf_get_from_surface (surface, 0, 0, ic, ic);
-
-    // copy the pixbuf to the image
+    // copy the surface to the image
     g_object_ref_sink (clk->clock_ana);
-    gtk_image_set_from_pixbuf (GTK_IMAGE (clk->clock_ana), pixbuf);
+    gtk_image_set_from_surface (GTK_IMAGE (clk->clock_ana), surface);
 
-    g_object_unref (pixbuf);
     cairo_destroy (cr);
 }
 
