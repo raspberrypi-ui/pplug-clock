@@ -1,37 +1,28 @@
 <?xml version="1.0"?>
 <wf-panel-pi>
-	<plugin name="panel">
-	<_short>Panel</_short>
+  <plugin name="clock">
 	<group>
-	<_short>Clock</_short>
-	<option name="clock_time_format" type="string">
-		<_short>Time Format</_short>
+	  <option name="time_format" type="string">
 		<default>%R</default>
-	</option>
-	<option name="clock_date_format" type="string">
-		<_short>Date Format</_short>
+	  </option>
+	  <option name="date_format" type="string">
 		<default>%A %x</default>
-	</option>
-	<option name="clock_font" type="string">
-		<_short>Clock Font</_short>
+	  </option>
+	  <option name="font" type="string">
 		<default>default</default>
-	</option>
-	<option name="clock_custom_font" type="bool">
-		<_short>Use Custom Font</_short>
+	  </option>
+	  <option name="custom_font" type="bool">
 		<default>false</default>
-	</option>
-	<option name="clock_analogue" type="bool">
-		<_short>Use Analogue Clock</_short>
+	  </option>
+	  <option name="analogue" type="bool">
 		<default>false</default>
-	</option>
-	<option name="clock_face_col" type="string">
-		<_short>Face Colour</_short>
+	  </option>
+	  <option name="face_col" type="string">
 		<default>white</default>
-	</option>
-	<option name="clock_hands_col" type="string">
-		<_short>Hands Colour</_short>
+	  </option>
+	  <option name="hands_col" type="string">
 		<default>black</default>
-	</option>
+	  </option>
 	</group>
-	</plugin>
+  </plugin>
 </wf-panel-pi>

@@ -42,13 +42,13 @@ class WayfireClock : public WayfireWidget
     std::unique_ptr <Gtk::Button> plugin;
     Glib::RefPtr<Gtk::GestureLongPress> gesture;
 
-    WfOption <std::string> time_format {"panel/clock_time_format"};
-    WfOption <std::string> date_format {"panel/clock_date_format"};
-    WfOption <std::string> clock_font {"panel/clock_font"};
-    WfOption <bool> font_override {"panel/clock_custom_font"};
-    WfOption <bool> analogue {"panel/clock_analogue"};
-    WfOption <std::string> face_col {"panel/clock_face_col"};
-    WfOption <std::string> hands_col {"panel/clock_hands_col"};
+    WfOption <std::string> time_format {"clock/time_format"};
+    WfOption <std::string> date_format {"clock/date_format"};
+    WfOption <std::string> clock_font {"clock/font"};
+    WfOption <bool> font_override {"clock/custom_font"};
+    WfOption <bool> analogue {"clock/analogue"};
+    WfOption <std::string> face_col {"clock/face_col"};
+    WfOption <std::string> hands_col {"clock/hands_col"};
 
     /* plugin */
     ClockPlugin *clk;
