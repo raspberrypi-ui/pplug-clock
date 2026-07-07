@@ -288,7 +288,7 @@ void clock_init (ClockPlugin *clk)
     gtk_button_set_relief (GTK_BUTTON (clk->plugin), GTK_RELIEF_NONE);
 #ifndef LXPLUG
     g_signal_connect (clk->plugin, "button-press-event", G_CALLBACK (clock_button_pressed), clk);
-    add_long_press (clk->plugin, NULL, NULL);
+    clk->gesture = add_long_press (clk->plugin, NULL, NULL);
 #endif
     g_signal_connect (clk->plugin, "clicked", G_CALLBACK (clock_button_clicked), clk);
 
@@ -306,6 +306,10 @@ void clock_init (ClockPlugin *clk)
 void clock_destructor (gpointer user_data)
 {
     ClockPlugin *clk = (ClockPlugin *) user_data;
+
+#ifndef LXPLUG
+    if (clk->gesture) g_object_unref (clk->gesture);
+#endif
 
     if (clk->timer) g_source_remove (clk->timer);
 
