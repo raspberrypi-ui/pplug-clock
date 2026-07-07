@@ -26,7 +26,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ============================================================================*/
 
 #include <glibmm.h>
-#include "gtk-utils.hpp"
 #include "clock.hpp"
 
 extern "C" {
@@ -76,9 +75,6 @@ void WayfireClock::init (Gtk::HBox *container)
     /* Setup structure */
     clk = g_new0 (ClockPlugin, 1);
     clk->plugin = (GtkWidget *)((*plugin).gobj());
-
-    /* Add long press for right click */
-    gesture = add_longpress_default (*plugin);
 
     /* Initialise the plugin */
     read_settings ();
