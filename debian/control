@@ -20,6 +20,6 @@ Description: Clock plugin for lxpanel-pi
 Package: wfplug-clock
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends},
- wf-panel-pi (>=1.10)
+ wf-panel-pi (>=1.18)
 Description: Clock plugin for wf-panel-pi
  Plugin for wf-panel-pi to display digital clock.
