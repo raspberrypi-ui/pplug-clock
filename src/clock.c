@@ -200,18 +200,28 @@ static void draw_face (ClockPlugin *clk, int hr, int min)
 static gboolean clock_tick (ClockPlugin *clk)
 {
     static int last_min = -1;
+    char *str;
     GDateTime *dt = g_date_time_new_now_local ();
     gchar *time = g_date_time_format (dt, clk->time_format);
     gchar *date = g_date_time_format (dt, clk->date_format);
 
     if (clk->override_font)
     {
-        char *markup = g_strdup_printf ("<span font = \"%s\">%s</span>", clk->clock_font, time);
-        gtk_label_set_markup (GTK_LABEL (clk->clock_label), markup);
-        g_free (markup);
+        str = g_strdup_printf ("<span font = \"%s\">%s</span>", clk->clock_font, time);
+        if (g_strcmp0 (str, gtk_label_get_label (GTK_LABEL (clk->clock_label))))
+            gtk_label_set_markup (GTK_LABEL (clk->clock_label), str);
+        g_free (str);
     }
-    else gtk_label_set_text (GTK_LABEL (clk->clock_label), time);
-    gtk_widget_set_tooltip_text (clk->plugin, date);
+    else
+    {
+        if (g_strcmp0 (time, gtk_label_get_label (GTK_LABEL (clk->clock_label))))
+            gtk_label_set_text (GTK_LABEL (clk->clock_label), time);
+    }
+
+    str = gtk_widget_get_tooltip_text (clk->plugin);
+    if (g_strcmp0 (date, str))
+        gtk_widget_set_tooltip_text (clk->plugin, date);
+    g_free (str);
 
     // only do all the cairo drawing if the picture needs to change
     if (last_min != g_date_time_get_minute (dt))
