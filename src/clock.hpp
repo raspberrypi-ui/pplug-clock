@@ -36,7 +36,7 @@ extern "C" {
 #include "clock.h"
 }
 
-class WayfireClock : public WayfireWidget
+class WidgetClock : public PanelWidget
 {
     std::unique_ptr <Gtk::Button> plugin;
 
@@ -54,7 +54,7 @@ class WayfireClock : public WayfireWidget
   public:
 
     void init (Gtk::HBox *container) override;
-    virtual ~WayfireClock ();
+    virtual ~WidgetClock ();
     bool set_icon (void);
     void read_settings (void);
     void settings_changed_cb (void);

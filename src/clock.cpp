@@ -29,21 +29,21 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "clock.hpp"
 
 extern "C" {
-    WayfireWidget *create () { return new WayfireClock; }
-    void destroy (WayfireWidget *w) { delete w; }
+    PanelWidget *create () { return new WidgetClock; }
+    void destroy (PanelWidget *w) { delete w; }
 
     const conf_table_t *config_params (void) { return conf_table; };
     const char *display_name (void) { return PLUGIN_TITLE; };
     const char *package_name (void) { return GETTEXT_PACKAGE; };
 }
 
-bool WayfireClock::set_icon (void)
+bool WidgetClock::set_icon (void)
 {
     clock_update_display (clk);
     return false;
 }
 
-void WayfireClock::read_settings (void)
+void WidgetClock::read_settings (void)
 {
     if (clk->time_format) g_free (clk->time_format);
     if (clk->date_format) g_free (clk->date_format);
@@ -59,13 +59,13 @@ void WayfireClock::read_settings (void)
         gdk_rgba_parse (&clk->hands_col, "black");
 }
 
-void WayfireClock::settings_changed_cb (void)
+void WidgetClock::settings_changed_cb (void)
 {
     read_settings ();
     clock_update_display (clk);
 }
 
-void WayfireClock::init (Gtk::HBox *container)
+void WidgetClock::init (Gtk::HBox *container)
 {
     /* Create the button */
     plugin = std::make_unique <Gtk::Button> ();
@@ -81,16 +81,16 @@ void WayfireClock::init (Gtk::HBox *container)
     clock_init (clk);
 
     /* Setup callbacks */
-    time_format.set_callback (sigc::mem_fun (*this, &WayfireClock::settings_changed_cb));
-    date_format.set_callback (sigc::mem_fun (*this, &WayfireClock::settings_changed_cb));
-    clock_font.set_callback (sigc::mem_fun (*this, &WayfireClock::settings_changed_cb));
-    font_override.set_callback (sigc::mem_fun (*this, &WayfireClock::settings_changed_cb));
-    analogue.set_callback (sigc::mem_fun (*this, &WayfireClock::settings_changed_cb));
-    face_col.set_callback (sigc::mem_fun (*this, &WayfireClock::settings_changed_cb));
-    hands_col.set_callback (sigc::mem_fun (*this, &WayfireClock::settings_changed_cb));
+    time_format.set_callback (sigc::mem_fun (*this, &WidgetClock::settings_changed_cb));
+    date_format.set_callback (sigc::mem_fun (*this, &WidgetClock::settings_changed_cb));
+    clock_font.set_callback (sigc::mem_fun (*this, &WidgetClock::settings_changed_cb));
+    font_override.set_callback (sigc::mem_fun (*this, &WidgetClock::settings_changed_cb));
+    analogue.set_callback (sigc::mem_fun (*this, &WidgetClock::settings_changed_cb));
+    face_col.set_callback (sigc::mem_fun (*this, &WidgetClock::settings_changed_cb));
+    hands_col.set_callback (sigc::mem_fun (*this, &WidgetClock::settings_changed_cb));
 }
 
-WayfireClock::~WayfireClock()
+WidgetClock::~WidgetClock()
 {
     clock_destructor (clk);
 }
