@@ -41,9 +41,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /* Typedefs and macros                                                        */
 /*----------------------------------------------------------------------------*/
 
-#define DEFAULT_TIME_FORMAT     "%R"
-#define DEFAULT_DATE_FORMAT     "%A %x"
-
 /*----------------------------------------------------------------------------*/
 /* Global data                                                                */
 /*----------------------------------------------------------------------------*/
@@ -347,17 +344,14 @@ static GtkWidget *clock_constructor (LXPanel *panel, config_setting_t *settings)
     clk->plugin = gtk_button_new ();
     lxpanel_plugin_set_data (clk->plugin, clk, clock_destructor);
 
-    /* Set config defaults */
-    clk->time_format = g_strdup (DEFAULT_TIME_FORMAT);
-    clk->date_format = g_strdup (DEFAULT_DATE_FORMAT);
-    clk->clock_font = g_strdup ("");
-    clk->override_font = FALSE;
-
     /* Read config */
     conf_table[0].value = (void *) &clk->time_format;
     conf_table[1].value = (void *) &clk->date_format;
     conf_table[2].value = (void *) &clk->clock_font;
     conf_table[3].value = (void *) &clk->override_font;
+    conf_table[4].value = (void *) &clk->analogue;
+    conf_table[5].value = (void *) &clk->face_col;
+    conf_table[6].value = (void *) &clk->hands_col;
     lxplug_read_settings (clk->settings, conf_table);
 
     clock_init (clk);
