@@ -252,6 +252,17 @@ void clock_update_display (ClockPlugin *clk)
     gtk_widget_set_visible (clk->clock_ana, clk->analogue);
 }
 
+void clock_set_values (ClockPlugin *clk)
+{
+    conf_table[0].value = (void *) &clk->time_format;
+    conf_table[1].value = (void *) &clk->date_format;
+    conf_table[2].value = (void *) &clk->clock_font;
+    conf_table[3].value = (void *) &clk->override_font;
+    conf_table[4].value = (void *) &clk->analogue;
+    conf_table[5].value = (void *) &clk->face_col;
+    conf_table[6].value = (void *) &clk->hands_col;
+}
+
 /* Handler for button click */
 #ifndef LXPLUG
 static gboolean clock_button_pressed (GtkWidget *, GdkEventButton *, ClockPlugin *clk)
@@ -345,13 +356,7 @@ static GtkWidget *clock_constructor (LXPanel *panel, config_setting_t *settings)
     lxpanel_plugin_set_data (clk->plugin, clk, clock_destructor);
 
     /* Read config */
-    conf_table[0].value = (void *) &clk->time_format;
-    conf_table[1].value = (void *) &clk->date_format;
-    conf_table[2].value = (void *) &clk->clock_font;
-    conf_table[3].value = (void *) &clk->override_font;
-    conf_table[4].value = (void *) &clk->analogue;
-    conf_table[5].value = (void *) &clk->face_col;
-    conf_table[6].value = (void *) &clk->hands_col;
+    clock_set_values (clk);
     lxplug_read_settings (clk->settings, conf_table);
 
     clock_init (clk);

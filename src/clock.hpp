@@ -48,7 +48,6 @@ class WidgetClock : public PanelWidget
     void init (Gtk::HBox *container) override;
     virtual ~WidgetClock ();
     bool set_icon (void);
-    void read_settings (void);
     void handle_config_reload (void);
 };
 

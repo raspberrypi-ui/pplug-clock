@@ -43,19 +43,6 @@ bool WidgetClock::set_icon (void)
     return false;
 }
 
-void WidgetClock::read_settings (void)
-{
-    conf_table[0].value = (void *) &clk->time_format;
-    conf_table[1].value = (void *) &clk->date_format;
-    conf_table[2].value = (void *) &clk->clock_font;
-    conf_table[3].value = (void *) &clk->override_font;
-    conf_table[4].value = (void *) &clk->analogue;
-    conf_table[5].value = (void *) &clk->face_col;
-    conf_table[6].value = (void *) &clk->hands_col;
-
-    load_configuration_data (PLUGIN_NAME, conf_table);
-}
-
 void WidgetClock::handle_config_reload (void)
 {
     load_configuration_data (PLUGIN_NAME, conf_table);
@@ -75,7 +62,8 @@ void WidgetClock::init (Gtk::HBox *container)
     clk->plugin = (GtkWidget *)((*plugin).gobj());
 
     /* Initialise the plugin */
-    read_settings ();
+    clock_set_values (clk);
+    load_configuration_data (PLUGIN_NAME, conf_table);
     clock_init (clk);
 }
 
