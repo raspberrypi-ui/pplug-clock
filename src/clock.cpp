@@ -45,23 +45,21 @@ bool WidgetClock::set_icon (void)
 
 void WidgetClock::read_settings (void)
 {
-    if (clk->time_format) g_free (clk->time_format);
-    if (clk->date_format) g_free (clk->date_format);
-    if (clk->clock_font) g_free (clk->clock_font);
-    clk->time_format = g_strdup (((std::string) time_format).c_str());
-    clk->date_format = g_strdup (((std::string) date_format).c_str());
-    clk->clock_font = g_strdup (((std::string) clock_font).c_str());
-    clk->override_font = font_override;
-    clk->analogue = analogue;
-    if (!gdk_rgba_parse (&clk->face_col, ((std::string) face_col).c_str()))
-        gdk_rgba_parse (&clk->face_col, "white");
-    if (!gdk_rgba_parse (&clk->hands_col, ((std::string) hands_col).c_str()))
-        gdk_rgba_parse (&clk->hands_col, "black");
+    conf_table[0].value = (void *) &clk->time_format;
+    conf_table[1].value = (void *) &clk->date_format;
+    conf_table[2].value = (void *) &clk->clock_font;
+    conf_table[3].value = (void *) &clk->override_font;
+    conf_table[4].value = (void *) &clk->analogue;
+    conf_table[5].value = (void *) &clk->face_col;
+    conf_table[6].value = (void *) &clk->hands_col;
+
+    load_configuration_data (PLUGIN_NAME, conf_table);
 }
 
-void WidgetClock::settings_changed_cb (void)
+void WidgetClock::handle_config_reload (void)
 {
-    read_settings ();
+    load_configuration_data (PLUGIN_NAME, conf_table);
+
     clock_update_display (clk);
 }
 
@@ -79,15 +77,6 @@ void WidgetClock::init (Gtk::HBox *container)
     /* Initialise the plugin */
     read_settings ();
     clock_init (clk);
-
-    /* Setup callbacks */
-    time_format.set_callback (sigc::mem_fun (*this, &WidgetClock::settings_changed_cb));
-    date_format.set_callback (sigc::mem_fun (*this, &WidgetClock::settings_changed_cb));
-    clock_font.set_callback (sigc::mem_fun (*this, &WidgetClock::settings_changed_cb));
-    font_override.set_callback (sigc::mem_fun (*this, &WidgetClock::settings_changed_cb));
-    analogue.set_callback (sigc::mem_fun (*this, &WidgetClock::settings_changed_cb));
-    face_col.set_callback (sigc::mem_fun (*this, &WidgetClock::settings_changed_cb));
-    hands_col.set_callback (sigc::mem_fun (*this, &WidgetClock::settings_changed_cb));
 }
 
 WidgetClock::~WidgetClock()

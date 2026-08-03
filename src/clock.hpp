@@ -40,14 +40,6 @@ class WidgetClock : public PanelWidget
 {
     std::unique_ptr <Gtk::Button> plugin;
 
-    WfOption <std::string> time_format {"clock/time_format"};
-    WfOption <std::string> date_format {"clock/date_format"};
-    WfOption <std::string> clock_font {"clock/font"};
-    WfOption <bool> font_override {"clock/custom_font"};
-    WfOption <bool> analogue {"clock/analogue"};
-    WfOption <std::string> face_col {"clock/face_col"};
-    WfOption <std::string> hands_col {"clock/hands_col"};
-
     /* plugin */
     ClockPlugin *clk;
 
@@ -57,7 +49,7 @@ class WidgetClock : public PanelWidget
     virtual ~WidgetClock ();
     bool set_icon (void);
     void read_settings (void);
-    void settings_changed_cb (void);
+    void handle_config_reload (void);
 };
 
 #endif /* end of include guard: WIDGETS_CLOCK_HPP */

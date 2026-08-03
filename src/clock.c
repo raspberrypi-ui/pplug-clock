@@ -49,14 +49,14 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /*----------------------------------------------------------------------------*/
 
 conf_table_t conf_table[8] = {
-    {CONF_TYPE_STRING,  "time_format",  N_("Time format"),      NULL},
-    {CONF_TYPE_STRING,  "date_format",  N_("Date format"),      NULL},
-    {CONF_TYPE_FONT,    "font",         N_("Clock font"),       NULL},
-    {CONF_TYPE_BOOL,    "custom_font",  N_("Use custom font"),  NULL},
-    {CONF_TYPE_BOOL,    "analogue",     N_("Analogue clock"),   NULL},
-    {CONF_TYPE_COLOUR,  "face_col",     N_("Colour of face"),   NULL},
-    {CONF_TYPE_COLOUR,  "hands_col",    N_("Colour of hands"),  NULL},
-    {CONF_TYPE_NONE,    NULL,           NULL,                   NULL}
+    {CONF_TYPE_STRING,  "time_format",  N_("Time format"),      NULL,   "%R"      },
+    {CONF_TYPE_STRING,  "date_format",  N_("Date format"),      NULL,   "%A %x"   },
+    {CONF_TYPE_FONT,    "font",         N_("Clock font"),       NULL,   "default" },
+    {CONF_TYPE_BOOL,    "custom_font",  N_("Use custom font"),  NULL,   "false"   },
+    {CONF_TYPE_BOOL,    "analogue",     N_("Analogue clock"),   NULL,   "false"   },
+    {CONF_TYPE_COLOUR,  "face_col",     N_("Colour of face"),   NULL,   "white"   },
+    {CONF_TYPE_COLOUR,  "hands_col",    N_("Colour of hands"),  NULL,   "black"   },
+    {CONF_TYPE_NONE,    NULL,           NULL,                   NULL,   NULL      }
 };
 
 /*----------------------------------------------------------------------------*/
