@@ -38,10 +38,9 @@ extern "C" {
 
 class WidgetClock : public PanelWidget
 {
-    std::unique_ptr <Gtk::Button> plugin;
-
-    /* plugin */
     ClockPlugin *clk;
+
+    std::unique_ptr <Gtk::Button> plugin;
 
   public:
 

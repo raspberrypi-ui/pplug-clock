@@ -45,9 +45,7 @@ bool WidgetClock::set_icon (void)
 
 void WidgetClock::handle_config_reload (void)
 {
-    load_configuration_data (PLUGIN_NAME, conf_table);
-
-    clock_update_display (clk);
+    if (load_configuration_data (PLUGIN_NAME, conf_table)) clock_update_display (clk);
 }
 
 void WidgetClock::init (Gtk::HBox *container)
