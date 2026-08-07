@@ -44,10 +44,10 @@ class WidgetClock : public PanelWidget
 
   public:
 
-    void init (Gtk::HBox *container) override;
+    void widget_init (Gtk::HBox *container) override;
     virtual ~WidgetClock ();
-    bool set_icon (void);
-    void handle_config_reload (void);
+    void widget_set_icon (void);
+    void widget_config_reload (void);
 };
 
 #endif /* end of include guard: WIDGETS_CLOCK_HPP */

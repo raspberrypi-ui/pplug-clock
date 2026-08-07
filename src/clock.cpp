@@ -37,18 +37,17 @@ extern "C" {
     const char *package_name (void) { return GETTEXT_PACKAGE; };
 }
 
-bool WidgetClock::set_icon (void)
+void WidgetClock::widget_set_icon (void)
 {
     clock_update_display (clk);
-    return false;
 }
 
-void WidgetClock::handle_config_reload (void)
+void WidgetClock::widget_config_reload (void)
 {
     if (load_configuration_data (PLUGIN_NAME, conf_table)) clock_update_display (clk);
 }
 
-void WidgetClock::init (Gtk::HBox *container)
+void WidgetClock::widget_init (Gtk::HBox *container)
 {
     /* Create the button */
     plugin = std::make_unique <Gtk::Button> ();
