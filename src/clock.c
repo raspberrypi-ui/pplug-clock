@@ -29,11 +29,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <locale.h>
 #include <glib/gi18n.h>
 
-#ifdef LXPLUG
 #include "plugin.h"
-#else
-#include "lxutils.h"
-#endif
 
 #include "clock.h"
 
@@ -61,13 +57,10 @@ conf_table_t conf_table[8] = {
 /*----------------------------------------------------------------------------*/
 
 static void show_calendar (ClockPlugin *clk);
-static gboolean handle_popup_keypress (GtkWidget *, GdkEventKey *event, gpointer user_data);
+static gboolean handle_popup_keypress (GtkWidget *, GdkEventKey *event, gpointer);
 static void cal_destroyed (GtkWidget *, gpointer user_data);
 static void draw_face (ClockPlugin *clk, int hr, int min);
 static gboolean clock_tick (ClockPlugin *clk);
-#ifndef LXPLUG
-static gboolean clock_button_pressed (GtkWidget *, GdkEventButton *, ClockPlugin *clk);
-#endif
 static void clock_button_clicked (GtkWidget *, ClockPlugin *clk);
 
 /*----------------------------------------------------------------------------*/
@@ -92,24 +85,18 @@ static void show_calendar (ClockPlugin *clk)
     /* Create a standard calendar widget as a child of the vertical box. */
     GtkWidget *calendar = gtk_calendar_new ();
     gtk_container_add (GTK_CONTAINER (clk->calendar_window), calendar);
-    g_signal_connect (calendar, "key-press-event", G_CALLBACK (handle_popup_keypress), clk);
+    g_signal_connect (calendar, "key-press-event", G_CALLBACK (handle_popup_keypress), NULL);
 
     g_signal_connect (clk->calendar_window, "destroy", G_CALLBACK (cal_destroyed), clk);
 
     wrap_popup_at_button (clk, clk->calendar_window, clk->plugin);
 }
 
-static gboolean handle_popup_keypress (GtkWidget *, GdkEventKey *event, gpointer user_data)
+static gboolean handle_popup_keypress (GtkWidget *, GdkEventKey *event, gpointer)
 {
-    ClockPlugin *clk = (ClockPlugin *) user_data;
-
     if (event->keyval == GDK_KEY_Escape)
     {
-#ifdef LXPLUG
-        if (clk->calendar_window) gtk_widget_destroy (clk->calendar_window);
-#else
         close_popup ();
-#endif
         return TRUE;
     }
     return FALSE;
@@ -264,23 +251,10 @@ void clock_set_values (ClockPlugin *clk)
 }
 
 /* Handler for button click */
-#ifndef LXPLUG
-static gboolean clock_button_pressed (GtkWidget *, GdkEventButton *, ClockPlugin *clk)
-{
-    if (clk->calendar_window && GTK_IS_WIDGET (clk->calendar_window) && gtk_widget_get_visible (clk->calendar_window)) clk->popup_shown = TRUE;
-    else clk->popup_shown = FALSE;
-    return FALSE;
-}
-#endif
-
 static void clock_button_clicked (GtkWidget *, ClockPlugin *clk)
 {
-#ifdef LXPLUG
-    if (clk->calendar_window) gtk_widget_destroy (clk->calendar_window);
-#else
     CHECK_LONGPRESS
-    if (clk->popup_shown) close_popup ();
-#endif
+    if (clk->calendar_window) close_popup ();
     else show_calendar (clk);
 }
 
@@ -304,11 +278,8 @@ void clock_init (ClockPlugin *clk)
 
     /* Set up button */
     gtk_button_set_relief (GTK_BUTTON (clk->plugin), GTK_RELIEF_NONE);
-#ifndef LXPLUG
-    g_signal_connect (clk->plugin, "button-press-event", G_CALLBACK (clock_button_pressed), clk);
-    clk->gesture = add_long_press (clk->plugin, NULL, NULL);
-#endif
     g_signal_connect (clk->plugin, "clicked", G_CALLBACK (clock_button_clicked), clk);
+    wrap_add_longpress (clk->gesture, clk->plugin, NULL, NULL);
 
     /* Set up variables */
     clk->calendar_window = NULL;
@@ -325,9 +296,7 @@ void clock_destructor (gpointer user_data)
 {
     ClockPlugin *clk = (ClockPlugin *) user_data;
 
-#ifndef LXPLUG
-    if (clk->gesture) g_object_unref (clk->gesture);
-#endif
+    wrap_free_gesture (clk->gesture);
 
     if (clk->timer) g_source_remove (clk->timer);
 
@@ -337,77 +306,6 @@ void clock_destructor (gpointer user_data)
     if (clk->clock_font) g_free (clk->clock_font);
     g_free (clk);
 }
-
-/*----------------------------------------------------------------------------*/
-/* LXPanel plugin functions                                                   */
-/*----------------------------------------------------------------------------*/
-#ifdef LXPLUG
-
-/* Constructor */
-static GtkWidget *clock_constructor (LXPanel *panel, config_setting_t *settings)
-{
-    /* Allocate and initialize plugin context */
-    ClockPlugin *clk = g_new0 (ClockPlugin, 1);
-
-    /* Allocate top level widget and set into plugin widget pointer. */
-    clk->panel = panel;
-    clk->settings = settings;
-    clk->plugin = gtk_button_new ();
-    lxpanel_plugin_set_data (clk->plugin, clk, clock_destructor);
-
-    /* Read config */
-    clock_set_values (clk);
-    lxplug_read_settings (clk->settings, conf_table);
-
-    clock_init (clk);
-
-    return clk->plugin;
-}
-
-/* Handler for button press */
-static gboolean clock_button_press_event (GtkWidget *plugin, GdkEventButton *event, LXPanel *)
-{
-    ClockPlugin *clk = lxpanel_plugin_get_data (plugin);
-
-    if (event->button == 1)
-    {
-        clock_button_clicked (plugin, clk);
-        return TRUE;
-    }
-    else return FALSE;
-}
-
-/* Apply changes from config dialog */
-static gboolean clock_apply_configuration (gpointer user_data)
-{
-    ClockPlugin *clk = lxpanel_plugin_get_data (GTK_WIDGET (user_data));
-
-    lxplug_write_settings (clk->settings, conf_table);
-
-    return FALSE;
-}
-
-/* Display configuration dialog */
-static GtkWidget *clock_configure (LXPanel *panel, GtkWidget *plugin)
-{
-    return lxpanel_generic_config_dlg_new (_(PLUGIN_TITLE), panel,
-        clock_apply_configuration, plugin,
-        conf_table);
-}
-
-int module_lxpanel_gtk_version = 1;
-char module_name[] = PLUGIN_NAME;
-
-/* Plugin descriptor */
-LXPanelPluginInit fm_module_init_lxpanel_gtk = {
-    .name = PLUGIN_TITLE,
-    .description = N_("Digital clock and calendar"),
-    .new_instance = clock_constructor,
-    .button_press_event = clock_button_press_event,
-    .config = clock_configure,
-    .gettext_package = GETTEXT_PACKAGE
-};
-#endif
 
 /* End of file */
 /*----------------------------------------------------------------------------*/

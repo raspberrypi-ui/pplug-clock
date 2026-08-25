@@ -25,32 +25,65 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ============================================================================*/
 
-#ifndef WIDGETS_CLOCK_HPP
-#define WIDGETS_CLOCK_HPP
+#include <locale.h>
+#include <glib/gi18n.h>
 
-#include <widget.hpp>
-#include <gtkmm/button.h>
+#include "lxutils.h"
 
-extern "C" {
-#include "plugin.h"
 #include "clock.h"
+
+/*----------------------------------------------------------------------------*/
+/* LXPanel plugin functions                                                   */
+/*----------------------------------------------------------------------------*/
+
+/* Constructor */
+static GtkWidget *clock_constructor (LXPanel *panel, config_setting_t *settings)
+{
+    /* Allocate and initialize plugin context */
+    ClockPlugin *clk = g_new0 (ClockPlugin, 1);
+
+    /* Allocate top level widget and set into plugin widget pointer. */
+    clk->panel = panel;
+    clk->settings = settings;
+    clk->plugin = gtk_button_new ();
+    lxpanel_plugin_set_data (clk->plugin, clk, clock_destructor);
+
+    /* Read config */
+    clock_set_values (clk);
+    lxplug_read_settings (clk->settings, conf_table);
+
+    clock_init (clk);
+
+    return clk->plugin;
 }
 
-class WidgetClock : public PanelWidget
+/* Apply changes from config dialog */
+static gboolean clock_apply_configuration (gpointer user_data)
 {
-    ClockPlugin *clk;
+    ClockPlugin *clk = lxpanel_plugin_get_data (GTK_WIDGET (user_data));
+    lxplug_write_settings (clk->settings, conf_table);
+    return FALSE;
+}
 
-    std::unique_ptr <Gtk::Button> plugin;
+/* Display configuration dialog */
+static GtkWidget *clock_configure (LXPanel *panel, GtkWidget *plugin)
+{
+    return lxpanel_generic_config_dlg_new (_(PLUGIN_TITLE), panel,
+        clock_apply_configuration, plugin,
+        conf_table);
+}
 
-  public:
+int module_lxpanel_gtk_version = 1;
+char module_name[] = PLUGIN_NAME;
 
-    void widget_init (Gtk::HBox *container) override;
-    virtual ~WidgetClock ();
-    void widget_set_icon (void);
-    void widget_config_reload (void);
+/* Plugin descriptor */
+LXPanelPluginInit fm_module_init_lxpanel_gtk = {
+    .name = PLUGIN_TITLE,
+    .description = N_("Digital clock and calendar"),
+    .new_instance = clock_constructor,
+    .config = clock_configure,
+    .gettext_package = GETTEXT_PACKAGE
 };
-
-#endif /* end of include guard: WIDGETS_CLOCK_HPP */
 
 /* End of file */
 /*----------------------------------------------------------------------------*/

@@ -50,7 +50,6 @@ typedef struct
     char *clock_font;			    /* Clock display font */
     gboolean override_font;         /* Use override font */
     guint timer;                    /* Seconds timer ID */
-    gboolean popup_shown;
     gboolean analogue;
     GdkRGBA face_col;               /* Clock face colour */
     GdkRGBA hands_col;              /* Clock hands colour */

@@ -12,14 +12,12 @@ Homepage: http://raspberrypi.com/
 
 Package: lpplug-clock
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends},
- lxpanel-pi (>=1.8)
+Depends: ${shlibs:Depends}, ${misc:Depends}
 Description: Clock plugin for lxpanel-pi
  Plugin for lxpanel-pi to display digital clock.
 
 Package: wfplug-clock
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends},
- wf-panel-pi (>=1.23)
+Depends: ${shlibs:Depends}, ${misc:Depends}
 Description: Clock plugin for wf-panel-pi
  Plugin for wf-panel-pi to display digital clock.
