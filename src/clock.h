@@ -34,14 +34,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 typedef struct 
 {
     GtkWidget *plugin;
-
-#ifdef LXPLUG
-    LXPanel *panel;                 /* Back pointer to panel */
-    config_setting_t *settings;     /* Plugin settings */
-#else
     GtkGesture *gesture;
-#endif
-
     GtkWidget *clock_label;         /* Clock display */
     GtkWidget *clock_ana;
     GtkWidget *calendar_window;     /* Calendar window */
@@ -53,6 +46,7 @@ typedef struct
     gboolean analogue;
     GdkRGBA face_col;               /* Clock face colour */
     GdkRGBA hands_col;              /* Clock hands colour */
+    LXPLUG_VARS
 } ClockPlugin;
 
 extern conf_table_t conf_table[8];
