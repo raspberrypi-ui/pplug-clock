@@ -57,11 +57,19 @@ static GtkWidget *clock_constructor (LXPanel *panel, config_setting_t *settings)
     return clk->plugin;
 }
 
+/* Handler for system config changed message from panel */
+static void clock_configuration_changed (LXPanel *, GtkWidget *plugin)
+{
+    ClockPlugin *clk = lxpanel_plugin_get_data (plugin);
+    clock_update_display (clk);
+}
+
 /* Apply changes from config dialog */
 static gboolean clock_apply_configuration (gpointer user_data)
 {
     ClockPlugin *clk = lxpanel_plugin_get_data (GTK_WIDGET (user_data));
     lxplug_write_settings (clk->settings, conf_table);
+    clock_update_display (clk);
     return FALSE;
 }
 
@@ -79,10 +87,11 @@ char module_name[] = PLUGIN_NAME;
 /* Plugin descriptor */
 LXPanelPluginInit fm_module_init_lxpanel_gtk = {
     .name = PLUGIN_TITLE,
+    .gettext_package = GETTEXT_PACKAGE,
     .description = N_("Digital clock and calendar"),
     .new_instance = clock_constructor,
-    .config = clock_configure,
-    .gettext_package = GETTEXT_PACKAGE
+    .reconfigure = clock_configuration_changed,
+    .config = clock_configure
 };
 
 /* End of file */
