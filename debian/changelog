@@ -1,3 +1,9 @@
+pplug-clock (1.13) trixie; urgency=medium
+
+  * Version bump for build
+
+ -- Simon Long <simon@raspberrypi.com>  Wed, 02 Sep 2026 13:23:20 +0100
+
 pplug-clock (1.12) trixie; urgency=medium
 
   * Add Georgian translation
