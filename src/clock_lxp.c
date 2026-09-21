@@ -87,8 +87,8 @@ char module_name[] = PLUGIN_NAME;
 /* Plugin descriptor */
 LXPanelPluginInit fm_module_init_lxpanel_gtk = {
     .name = PLUGIN_TITLE,
+    .description = PLUGIN_DESC,
     .gettext_package = GETTEXT_PACKAGE,
-    .description = N_("Digital clock and calendar"),
     .new_instance = clock_constructor,
     .reconfigure = clock_configuration_changed,
     .config = clock_configure

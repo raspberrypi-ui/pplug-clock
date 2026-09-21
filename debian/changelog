@@ -1,3 +1,9 @@
+pplug-clock (1.14) trixie; urgency=medium
+
+  * Add tooltip for widget browser
+
+ -- Simon Long <simon@raspberrypi.com>  Mon, 21 Sep 2026 09:43:28 +0100
+
 pplug-clock (1.13) trixie; urgency=medium
 
   * Version bump for build
